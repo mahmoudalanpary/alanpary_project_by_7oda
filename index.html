@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YASO BIRTHDAY // 17</title>
+
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Cairo:wght@700&display=swap');
+
+        body { 
+            background: #ffffff;
+            color: #000000;
+            font-family: 'Space Grotesk', sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+            min-height: 100dvh;
+        }
+
+        .ambient-glow {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at center, #fdfdfd 0%, #f0f0f0 100%);
+            z-index: -1;
+        }
+
+        /* زينة الخيوط (Buntings) */
+        .bunting {
+            position: absolute;
+            top: -10px;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            z-index: 5;
+        }
+        .flag {
+            width: 0; height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 30px solid;
+            animation: swing 2s infinite alternate ease-in-out;
+            transform-origin: top;
+        }
+        @keyframes swing { from { transform: rotate(-10deg); } to { transform: rotate(10deg); } }
+
+        /* زينة مكثفة متطايرة */
+        .decoration-star {
+            position: absolute;
+            animation: float 8s ease-in-out infinite alternate;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg) scale(1); }
+            100% { transform: translateY(-40px) rotate(45deg) scale(1.2); }
+        }
+
+        .card-container {
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(15px);
+            border-radius: 32px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 10;
+        }
+
+        .cake-icon {
+            font-size: 3.5rem;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.15));
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+
+        .balloon {
+            position: absolute;
+            font-size: 2.5rem;
+            animation: floatUp 10s linear infinite;
+            bottom: -100px;
+            z-index: 1;
+        }
+        @keyframes floatUp { to { transform: translateY(-120vh) rotate(20deg); } }
+    </style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect } = React;
+
+function App() {
+    const [age, setAge] = useState(0);
+    const [isCelebrating, setIsCelebrating] = useState(false);
+
+    useEffect(() => {
+        if(age < 17) {
+            const timer = setTimeout(() => setAge(a => a + 1), 80);
+            return () => clearTimeout(timer);
+        }
+        // انفجار ترحيبي بمجرد اكتمال السن
+        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+    }, [age]);
+
+    const handleCelebrate = () => {
+        setIsCelebrating(true);
+        const end = Date.now() + 3000;
+        (function frame() {
+            confetti({ particleCount: 7, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#6366f1', '#ef4444', '#FFD700'] });
+            confetti({ particleCount: 7, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#6366f1', '#ef4444', '#FFD700'] });
+            if (Date.now() < end) requestAnimationFrame(frame);
+        }());
+        setTimeout(() => setIsCelebrating(false), 3000);
+    };
+
+    return (
+        <div className="min-h-screen w-full flex items-center justify-center p-4 relative overflow-hidden">
+            <div className="ambient-glow"></div>
+
+            {/* خيوط الزينة في الأعلى */}
+            <div className="bunting">
+                {[...Array(15)].map((_, i) => (
+                    <div key={i} className="flag" style={{ 
+                        borderTopColor: i % 3 === 0 ? '#ef4444' : (i % 3 === 1 ? '#6366f1' : '#FFD700'),
+                        animationDelay: `${i * 0.2}s`
+                    }}></div>
+                ))}
+            </div>
+            
+            {/* بالونات تتطاير في الخلفية */}
+            <div className="balloon text-red-400" style={{left: '5%', animationDelay: '0s'}}>🎈</div>
+            <div className="balloon text-blue-400" style={{left: '85%', animationDelay: '2s'}}>🎈</div>
+            <div className="balloon text-yellow-400" style={{left: '45%', animationDelay: '5s'}}>🎈</div>
+
+            {/* نجوم وزينة ثابتة */}
+            <div className="decoration-star text-yellow-400 top-20 left-10 text-3xl">✨</div>
+            <div className="decoration-star text-indigo-400 top-40 right-10 text-4xl" style={{animationDelay: '1s'}}>✦</div>
+            <div className="decoration-star text-pink-400 bottom-40 left-20 text-2xl" style={{animationDelay: '0.5s'}}>🎉</div>
+            <div className="decoration-star text-red-400 bottom-10 right-20 text-3xl" style={{animationDelay: '1.5s'}}>✨</div>
+            <div className="decoration-star text-green-400 top-1/2 left-5 text-xl">🎈</div>
+
+            <div className="card-container w-full max-w-4xl p-6 md:p-12 relative">
+                <div className="flex flex-col md:flex-row items-center gap-12">
+                    
+                    <div className="relative w-full md:w-1/2 flex flex-col items-center">
+                        <div className="relative w-64 md:w-80 aspect-[3/4] rounded-3xl overflow-hidden shadow-2xl border-4 border-white transform hover:scale-105 transition-transform duration-500">
+                            <img src="https://img.sanishtech.com/u/3d0f8d304f66f4aacd90316280a8b89a.png" alt="Yaso" className="w-full h-full object-cover"/>
+                            <div className="absolute top-4 right-4 bg-indigo-600 text-white px-4 py-1 rounded-full text-xs font-bold shadow-lg animate-pulse">
+                                LVL. {age}
+                            </div>
+                        </div>
+                        
+                        <div className="mt-8 flex items-center gap-4 bg-white px-8 py-3 rounded-2xl border border-black/5 shadow-xl">
+                            <span className="cake-icon">🎂</span>
+                            <div className="text-left">
+                                <p className="text-[10px] uppercase tracking-tighter text-black/40 font-bold">Anniversary Treat</p>
+                                <p className="font-bold text-xl text-black">SWEET SEVENTEEN</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="w-full md:w-1/2 text-center md:text-left space-y-8">
+                        <div className="space-y-3">
+                            <p className="text-[12px] tracking-[0.5em] text-indigo-600 font-black uppercase">Legendary Birthday</p>
+                            <h1 className="text-7xl md:text-9xl font-black tracking-tighter leading-none text-black">
+                                YASO<span className="text-red-500">!</span>
+                            </h1>
+                        </div>
+
+                        <div className="space-y-5">
+                            <p className="text-black text-lg md:text-xl leading-relaxed font-bold">
+                                Chapter 17. Following the legend of <br/>
+                                <span className="text-red-600 underline decoration-4 underline-offset-4">Kurenai Yuhi</span>.
+                                <br/> 
+                                <span className="text-black/40 text-sm font-medium italic tracking-wide">Born on June 11 // Genjutsu Mastery</span>
+                            </p>
+                            
+                            <div className="flex items-center gap-4 justify-center md:justify-start">
+                                <span className="text-2xl">⚡</span>
+                                <div className="h-[3px] flex-grow max-w-[100px] bg-gradient-to-r from-indigo-500 to-transparent"></div>
+                            </div>
+                        </div>
+
+                        <button 
+                            onClick={handleCelebrate}
+                            className="w-full md:w-auto px-16 py-5 bg-black text-white font-black text-sm tracking-[0.4em] uppercase rounded-2xl transition-all hover:bg-indigo-600 active:scale-90 shadow-[0_20px_40px_rgba(0,0,0,0.2)] flex items-center justify-center gap-3"
+                        >
+                            {isCelebrating ? "PARTY OVERLOAD! 🎊" : "CELEBRATE NOW 🕯️"}
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {isCelebrating && (
+                <div className="fixed inset-0 flex items-center justify-center z-[100] pointer-events-none">
+                    <div className="bg-white p-12 rounded-[3rem] shadow-2xl border-8 border-indigo-500 animate-bounce">
+                        <h2 className="text-5xl md:text-8xl font-black text-black text-center leading-none">
+                             HAPPY 17 BRO<br/><span className="text-indigo-600">🥳</span>
+                        </h2>
+                    </div>
+                </div>
+            )}
+
+            <footer className="absolute bottom-6 right-8 text-[10px] font-black text-black/30 tracking-[0.3em] uppercase">
+                Yaso 17 // Genjutsu Legacy // 2026
+            </footer>
+        </div>
+    );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+</script>
+
+</body>
+</html>
